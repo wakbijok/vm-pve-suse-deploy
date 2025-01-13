@@ -1,0 +1,12 @@
+#cloud-config
+hostname: {{ hostname }}
+manage_etc_hosts: true
+ssh_pwauth: true
+users:
+  - default
+  - name: admin
+    ssh_authorized_keys:
+      - {{ lookup('file', '~/.ssh/id_rsa.pub') }}
+runcmd:
+  - zypper refresh
+  - zypper install -y wget curl vim telnet nano

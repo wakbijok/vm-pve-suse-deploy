@@ -1,0 +1,18 @@
+---
+- name: Load User Inputs
+  import_playbook: ../roles/common/tasks/user_input.yml
+
+- name: Deploy openSUSE VM on Proxmox with Cloud-Init
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../vars/vault.yml
+
+  tasks:
+    - name: Download and upload the cloud-init image
+      include_role:
+        name: download_cloud_image
+
+    - name: Create VM on Proxmox
+      include_role:
+        name: create_vm

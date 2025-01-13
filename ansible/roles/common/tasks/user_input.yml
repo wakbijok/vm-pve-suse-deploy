@@ -1,0 +1,37 @@
+---
+- name: Prompt for VM Configuration
+  hosts: localhost
+  gather_facts: false
+
+  vars_prompt:
+    - name: vm_id
+      prompt: "Enter VM ID (must be unique in Proxmox)"
+      private: no
+
+    - name: hostname
+      prompt: "Enter Hostname"
+      private: no
+
+    - name: disk_size
+      prompt: "Enter Disk Size (GB)"
+      private: no
+
+    - name: memory
+      prompt: "Enter Memory (MB)"
+      private: no
+
+    - name: cores
+      prompt: "Enter Number of CPU Cores"
+      private: no
+
+    - name: ip_address
+      prompt: "Enter VM IP Address"
+      private: no
+
+    - name: gateway
+      prompt: "Enter Gateway"
+      private: no
+
+    - name: dns
+      prompt: "Enter DNS Server"
+      private: no

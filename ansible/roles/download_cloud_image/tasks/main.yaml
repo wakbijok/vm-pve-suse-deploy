@@ -1,0 +1,31 @@
+---
+- name: Check if the Cloud-Init image exists in Proxmox
+  uri:
+    url: "https://{{ proxmox_api_host }}/api2/json/storage/{{ iso_storage }}/content"
+    method: GET
+    user: "{{ proxmox_api_user }}"
+    password: "{{ proxmox_api_password }}"
+    force_basic_auth: yes
+    headers:
+      Content-Type: application/json
+  register: iso_check_response
+
+- name: Download the Cloud-Init image if not present
+  when: "'{{ openSUSE_cloudinit_image_filename }}' not in iso_check_response.json.data | map(attribute='filename') | list"
+  get_url:
+    url: "{{ openSUSE_cloudinit_image_url }}"
+    dest: "/tmp/{{ openSUSE_cloudinit_image_filename }}"
+
+- name: Upload the Cloud-Init image to Proxmox
+  when: "'{{ openSUSE_cloudinit_image_filename }}' not in iso_check_response.json.data | map(attribute='filename') | list"
+  uri:
+    url: "https://{{ proxmox_api_host }}/api2/json/storage/{{ iso_storage }}/upload"
+    method: POST
+    user: "{{ proxmox_api_user }}"
+    password: "{{ proxmox_api_password }}"
+    force_basic_auth: yes
+    headers:
+      Content-Type: multipart/form-data
+    body_format: form-multipart
+    body:
+      content: "@/tmp/{{ openSUSE_cloudinit_image_filename }}"

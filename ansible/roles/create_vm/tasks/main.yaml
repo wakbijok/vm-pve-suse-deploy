@@ -1,0 +1,30 @@
+---
+- name: Create VM using Proxmox API
+  proxmox_kvm:
+    api_user: "{{ proxmox_api_user }}"
+    api_password: "{{ proxmox_api_password }}"
+    api_host: "{{ proxmox_api_host }}"
+    vmid: "{{ vm_id }}"
+    hostname: "{{ hostname }}"
+    cores: "{{ cores }}"
+    memory: "{{ memory }}"
+    disk:
+      size: "{{ disk_size }}G"
+      storage: "{{ storage }}"
+    netif:
+      net0:
+        model: virtio
+        bridge: vmbr0
+        ip: "{{ ip_address }}"
+        gateway: "{{ gateway }}"
+        dns: "{{ dns }}"
+    ide2: "local:{{ iso_storage }}/{{ openSUSE_cloudinit_image_filename }},media=cdrom"
+    scsihw: virtio-scsi-pci
+    ostype: l26
+    cloudinit: true
+    state: present
+
+- name: Enable Cloud-Init in the VM
+  template:
+    src: cloud-init-template.yml
+    dest: /var/lib/vz/snippets/{{ hostname }}-cloud-init.yml
